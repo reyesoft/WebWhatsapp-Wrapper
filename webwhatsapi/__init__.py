@@ -70,7 +70,9 @@ class WhatsAPIDriver(object):
     _SELECTORS = {
         'firstrun': "#wrapper",
         'qrCode': "img[alt=\"Scan me!\"]",
-        'qrCodePlain': "._2EZ_m",
+        # NOTE: selector changed by maxi7587
+        # 'qrCodePlain': "._2EZ_m",
+        'qrCodePlain': "._1pw2F",
         'mainPage': ".app.two",
         'chatList': ".infinite-list-viewport",
         'messageList': "#main > div > div:nth-child(1) > div > div.message-list",
@@ -85,7 +87,9 @@ class WhatsAPIDriver(object):
         'UnreadChatBanner': '.message-list',
         'ReconnectLink': '.action',
         'WhatsappQrIcon': 'span.icon:nth-child(2)',
-        'QRReloader': '._2EZ_m > span > div'
+        # NOTE: selector changed by maxi7587
+        # 'QRReloader': '._2EZ_m > span > div'
+        'QRReloader': '._1pw2F > span > div'
     }
 
     _CLASSES = {
@@ -150,7 +154,7 @@ class WhatsAPIDriver(object):
         self.driver.close()
 
     def __init__(self, client="firefox", username="API", proxy=None, command_executor=None, loadstyles=False,
-                 profile=None, headless=False, autoconnect=True, logger=None, extra_params=None, chrome_options=None, 
+                 profile=None, headless=False, autoconnect=True, logger=None, extra_params=None, chrome_options=None,
                  executable_path=None):
         """Initialises the webdriver"""
 
@@ -195,12 +199,12 @@ class WhatsAPIDriver(object):
 
             self.logger.info("Starting webdriver")
             if executable_path is not None:
-                executable_path = os.path.abspath(executable_path)                                
+                executable_path = os.path.abspath(executable_path)
 
                 self.logger.info("Starting webdriver")
                 self.driver = webdriver.Firefox(capabilities=capabilities, options=options, executable_path=executable_path,
                                                     **extra_params)
-            else: 
+            else:
                 self.logger.info("Starting webdriver")
                 self.driver = webdriver.Firefox(capabilities=capabilities, options=options,
                                                     **extra_params)
@@ -245,13 +249,14 @@ class WhatsAPIDriver(object):
 
     def connect(self):
         self.driver.get(self._URL)
-        
+
         profilePath = ""
+        # NOTE: maxi7587 changed to firefox
         if self.client == "chrome":
             profilePath = ""
         else:
             profilePath = self._profile.path
-        
+
         local_storage_file = os.path.join(profilePath, self._LOCAL_STORAGE_FILE)
         if os.path.exists(local_storage_file):
             with open(local_storage_file) as f:
@@ -562,7 +567,7 @@ class WhatsAPIDriver(object):
         :type message: str
         """
         return self.wapi_functions.sendMessageToID(recipient, message)
-    
+
     def convert_to_base64(self, path):
         """
         :param path: file path
@@ -576,8 +581,8 @@ class WhatsAPIDriver(object):
             archive = b64encode(image_file.read())
             archive = archive.decode('utf-8')
         return 'data:' + content_type + ';base64,' + archive
-    
-    
+
+
     def send_media(self, path, chatid, caption):
         """
             converts the file to base64 and sends it using the sendImage function of wapi.js
@@ -589,8 +594,8 @@ class WhatsAPIDriver(object):
         imgBase64 = self.convert_to_base64(path)
         filename = os.path.split(path)[-1]
         return self.wapi_functions.sendImage(imgBase64, chatid, filename, caption)
-    
-    
+
+
 
     def chat_send_seen(self, chat_id):
         """
@@ -726,7 +731,7 @@ class WhatsAPIDriver(object):
         :return:
         """
         return self.wapi_functions.deleteConversation(chat_id)
-    
+
     def delete_message(self, chat_id, message_array, revoke=False):
         """
         Delete a chat
