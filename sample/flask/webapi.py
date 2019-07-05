@@ -624,6 +624,7 @@ def get_active_clients():
 @app.route('/admin/clients', methods=['PUT'])
 def run_clients():
 	"""Force create driver for client """
+	print('clients put request', request.__dict__)
 	clients = request.form.get('clients')
 	if not clients:
 		return jsonify({'Error': 'no clients provided'})
@@ -676,4 +677,4 @@ def hello():
 
 if __name__ == '__main__':
 	# todo: load presaved active client ids
-	app.run()
+	app.run(threaded=True)
