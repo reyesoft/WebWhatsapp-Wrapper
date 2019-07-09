@@ -534,6 +534,25 @@ def get_contacts():
 	return jsonify(g.driver.get_contacts())
 
 
+@app.route('/mycontacts', methods=['GET'])
+@login_required
+def get_my_contacts():
+	"""Get contact list as json"""
+	print('g.driver --->', g.driver.__dict__)
+	return jsonify(g.driver.get_my_contacts())
+
+
+@app.route('/contactstatus', methods=['GET'])
+@login_required
+def check_number_status():
+	"""Check if the passed number has whatsapp account"""
+	contact_phone_number = request.form.get('contact_phone_number')
+	has_whatsapp = g.driver.check_number_status(f"{contact_phone_number}@c.us").status
+	print('has whatsapp? --->', has_whatsapp)
+	return jsonify({'has_whatsapp': has_whatsapp})
+
+
+
 # ------------------------------- Chats ---------------------------------------
 
 @app.route('/chats', methods=['GET'])
@@ -581,7 +600,34 @@ def send_message(chat_id):
 		res = send_media(chat_id, request)
 	else:
 		message = request.form.get('message')
+		print('message --->', message)
+		print('chat_id --->', chat_id)
 		res = g.driver.chat_send_message(chat_id, message)
+
+	if res:
+		return jsonify(res)
+	else:
+		return False
+
+
+@app.route('/messages', methods=['POST'])
+@login_required
+def send_message_to_number():
+	"""Send a message to a number
+	If a media file is found, send_media is called, else a simple text message
+	is sent
+	"""
+
+	files = request.files
+	user_id = request.form.get('user_id')
+
+	if files:
+		res = send_media(user_id, request)
+	else:
+		message = request.form.get('message')
+		print('message --->', message)
+		print('user_id --->', user_id)
+		res = g.driver.send_message_to_id(user_id, message)
 
 	if res:
 		return jsonify(res)
@@ -624,7 +670,6 @@ def get_active_clients():
 @app.route('/admin/clients', methods=['PUT'])
 def run_clients():
 	"""Force create driver for client """
-	print('clients put request', request.__dict__)
 	clients = request.form.get('clients')
 	if not clients:
 		return jsonify({'Error': 'no clients provided'})
