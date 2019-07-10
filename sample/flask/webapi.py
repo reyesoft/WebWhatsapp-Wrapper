@@ -241,7 +241,8 @@ def init_timer(client_id):
 		return
 	# Create a timer to call check_new_message function after every 2 seconds.
 	# client_id param is needed to be passed to check_new_message
-	timers[client_id] = RepeatedTimer(2, check_new_messages, client_id)
+	# NOTE: uncomment to automatically read messages from other users
+	# timers[client_id] = RepeatedTimer(2, check_new_messages, client_id)
 
 
 def check_new_messages(client_id):
@@ -513,6 +514,13 @@ def get_qr():
 	return jsonify({'qr': qr})
 
 
+@app.route('/isloggedin', methods=['GET'])
+def is_logged_in():
+	"""Checks if the client is logged in"""
+	is_logged = g.driver.is_logged_in()
+	return jsonify({'is_logged': is_logged})
+
+
 @app.route('/messages/unread', methods=['GET'])
 @login_required
 def get_unread_messages():
@@ -590,6 +598,26 @@ def get_messages(chat_id):
 				msg.chat.send_seen()
 			except:
 				pass
+
+	return jsonify(msgs)
+
+
+@app.route('/chats/<chat_id>/messages/unread', methods=['GET'])
+@login_required
+def get_chat_unread_messages(chat_id):
+	"""Return all of the chat messages"""
+
+	mark_seen = request.args.get('mark_seen', True)
+	chat = g.driver.get_chat_from_id(chat_id)
+	msgs = chat.get_unread_messages()
+
+	for msg in msgs:
+		print(msg.id)
+
+	print("will mark as read?", mark_seen)
+
+	if mark_seen:
+		g.driver.chat_send_seen(chat_id)
 
 	return jsonify(msgs)
 
