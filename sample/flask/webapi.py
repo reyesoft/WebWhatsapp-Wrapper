@@ -562,6 +562,14 @@ def get_chats():
 	result = g.driver.get_all_chats()
 	return jsonify(result)
 
+# NOTE: this is a special case where we need the phone number instead of the id
+@app.route('/chats/<phone_number>', methods=['GET'])
+@login_required
+def get_chat_from_phone_number(phone_number):
+	"""Return the contact's chat (if it can be created, error otherwise)"""
+	result = g.driver.get_chat_from_phone_number(phone_number, True)
+	return jsonify(result)
+
 
 @app.route('/chats/<chat_id>/messages', methods=['GET'])
 @login_required
@@ -612,7 +620,7 @@ def send_message(chat_id):
 
 @app.route('/messages', methods=['POST'])
 @login_required
-def send_message_to_number():
+def send_message_to_id():
 	"""Send a message to a number
 	If a media file is found, send_media is called, else a simple text message
 	is sent
@@ -625,14 +633,15 @@ def send_message_to_number():
 		res = send_media(user_id, request)
 	else:
 		message = request.form.get('message')
-		print('message --->', message)
-		print('user_id --->', user_id)
+		# TODO: fix send_message_to_id method (it allways returns False, despite sending the message or not)
 		res = g.driver.send_message_to_id(user_id, message)
 
-	if res:
-		return jsonify(res)
-	else:
-		return False
+	return str(res)
+	# TODO: fix send_message_to_id method (it allways returns False, despite sending the message or not)
+	# 	return jsonify(res)
+	# if res:
+	# else:
+	# 	return False
 
 
 @app.route('/messages/<msg_id>/download', methods=['GET'])
