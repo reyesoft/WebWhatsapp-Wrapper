@@ -560,6 +560,50 @@ def check_number_status():
 	return jsonify({'has_whatsapp': has_whatsapp})
 
 
+@app.route('/updateprofilename', methods=['PUT'])
+@login_required
+def update_profile_name():
+	"""Update whatsapp profile name"""
+	name = request.form.get('name')
+	result = g.driver.update_profile_name(name)
+	return jsonify(result)
+
+
+@app.route('/updateprofileinfo', methods=['PUT'])
+@login_required
+def update_profile_info():
+	"""Update whatsapp profile info"""
+	info = request.form.get('info')
+	result = g.driver.update_profile_info(info)
+	return jsonify(result)
+
+
+@app.route('/updateprofilepicture', methods=['PUT'])
+@login_required
+def update_profile_picture():
+	"""Update whatsapp profile picture"""
+	picture_url = request.form.get('picture_url')
+	if not os.path.exists('profile_pictures'):
+		os.mkdir('profile_pictures')
+		print('Directory profile_pictures Created')
+	else:
+		print('Directory profile_pictures already exists')
+	picture_path = f"profile_pictures/{g.client_id}_profile_picture.jpg"
+	with open(picture_path, 'wb') as handle:
+		handle.truncate()
+		response = requests.get(picture_url, stream=True)
+		if not response.ok:
+			print(response)
+		for block in response.iter_content(1024):
+			if not block:
+				break
+			handle.write(block)
+
+	full_picture_path = f"{os.getcwd()}/{picture_path}"
+	result = g.driver.update_profile_picture(full_picture_path)
+	os.remove(picture_path)
+	return jsonify(result)
+
 
 # ------------------------------- Chats ---------------------------------------
 
