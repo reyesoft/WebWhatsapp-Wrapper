@@ -25,6 +25,8 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+# NOTE ActionChains added by maxi7587
+from selenium.webdriver.common.action_chains import ActionChains
 
 from .objects.chat import Chat, UserChat, factory_chat
 from .objects.contact import Contact
@@ -87,6 +89,17 @@ class WhatsAPIDriver(object):
         'UnreadChatBanner': '.message-list',
         'ReconnectLink': '.action',
         'WhatsappQrIcon': 'span.icon:nth-child(2)',
+        # NOTE: next block until comment was added by maxi7587
+        'profileImageIcon': '._3RWII',
+        'editNameTagHandler': '._30prC',
+        'editNameInput': '._3u328',
+        'backToMainViewButton': '.qfKkX',
+        'profileImageContainer': '._3BYwr',
+        'updateProfileImageContainer': '._1JS2G',
+        'uploadPictureOption': 'div[title="Subir foto"]',
+        'pictureInput': 'input[type="file"]',
+        'submitPictureButton': '._1g8sv',
+        # until here
         # NOTE: selector changed by maxi7587
         # 'QRReloader': '._2EZ_m > span > div'
         'QRReloader': '._1pw2F > span > div'
@@ -782,3 +795,69 @@ class WhatsAPIDriver(object):
 
     def demote_participant_admin_group(self, idGroup, idParticipant):
         return self.wapi_functions.demoteParticipantAdminGroup(idGroup,idParticipant)
+
+    # NOTE: method added by maxi7587
+    def update_profile_name(self, new_name):
+        try:
+            profile_image_icon = self.driver.find_element_by_css_selector(self._SELECTORS['profileImageIcon'])
+            profile_image_icon.click()
+            WebDriverWait(self.driver, 5).until(EC.visibility_of_element_located((By.CSS_SELECTOR, self._SELECTORS['editNameTagHandler'])))
+            edit_name_tag_handler = self.driver.find_element_by_css_selector(self._SELECTORS['editNameTagHandler'])
+            edit_name_tag_handler.click()
+            WebDriverWait(self.driver, 5).until(EC.visibility_of_element_located((By.CSS_SELECTOR, self._SELECTORS['editNameInput'])))
+            edit_name_input = self.driver.find_element_by_css_selector(self._SELECTORS['editNameInput'])
+            edit_name_input.click()
+            edit_name_input.clear()
+            edit_name_input.send_keys(new_name)
+            save_new_name_button = self.driver.find_element_by_css_selector('div[title*="Haz clic para guardar, ESC para cancelar"]')
+            save_new_name_button.click()
+            WebDriverWait(self.driver, 5).until(EC.visibility_of_element_located((By.CSS_SELECTOR, self._SELECTORS['editNameTagHandler'])))
+            back_to_main_view_button = self.driver.find_element_by_css_selector(self._SELECTORS['backToMainViewButton'])
+            back_to_main_view_button.click()
+            return {'success': True}
+        except:
+            return {'success': False}
+
+    # NOTE: method added by maxi7587
+    def update_profile_info(self, new_info):
+        try:
+            profile_image_icon = self.driver.find_element_by_css_selector(self._SELECTORS['profileImageIcon'])
+            profile_image_icon.click()
+            WebDriverWait(self.driver, 5).until(EC.visibility_of_element_located((By.CSS_SELECTOR, self._SELECTORS['editNameTagHandler'])))
+            edit_info_tag_handler = self.driver.find_elements_by_css_selector(self._SELECTORS['editNameTagHandler'])[-1]
+            edit_info_tag_handler.click()
+            WebDriverWait(self.driver, 5).until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'div[contenteditable="true"]')))
+            edit_info_input = self.driver.find_element_by_css_selector('div[contenteditable="true"]')
+            edit_info_input.click()
+            edit_info_input.clear()
+            edit_info_input.send_keys(new_info)
+            save_new_info_button = self.driver.find_element_by_css_selector('div[title*="Haz clic para guardar, ESC para cancelar"]')
+            save_new_info_button.click()
+            WebDriverWait(self.driver, 5).until(EC.visibility_of_element_located((By.CSS_SELECTOR, self._SELECTORS['editNameTagHandler'])))
+            back_to_main_view_button = self.driver.find_element_by_css_selector(self._SELECTORS['backToMainViewButton'])
+            back_to_main_view_button.click()
+            return {'success': True}
+        except:
+            return {'success': False}
+
+    # NOTE: method added by maxi7587
+    def update_profile_picture(self, new_picture_path):
+        loadingImage = '._3pkG4'
+        try:
+            action = ActionChains(self.driver)
+            profile_image_icon = self.driver.find_element_by_css_selector(self._SELECTORS['profileImageIcon'])
+            profile_image_icon.click()
+            WebDriverWait(self.driver, 5).until(EC.visibility_of_element_located((By.CSS_SELECTOR, self._SELECTORS['profileImageContainer'])))
+            picture_input = self.driver.find_element_by_css_selector(self._SELECTORS['pictureInput'])
+            self.driver.execute_script("arguments[0].style.display = 'block';", picture_input)
+            picture_input = self.driver.find_element_by_css_selector(self._SELECTORS['pictureInput'])
+            picture_input.send_keys(new_picture_path)
+            submit_new_picture = self.driver.find_element_by_css_selector(self._SELECTORS['submitPictureButton'])
+            submit_new_picture.click()
+            WebDriverWait(self.driver, 5).until(EC.visibility_of_element_located((By.CSS_SELECTOR, loadingImage)))
+            WebDriverWait(self.driver, 60).until_not(EC.visibility_of_element_located((By.CSS_SELECTOR, loadingImage)))
+            back_to_main_view_button = self.driver.find_element_by_css_selector(self._SELECTORS['backToMainViewButton'])
+            back_to_main_view_button.click()
+            return {'success': True}
+        except:
+            return {'success': False}
