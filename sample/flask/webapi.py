@@ -776,7 +776,7 @@ def kill_clients():
 	if not kill_dead and not clients:
 		return jsonify({'Error': 'no clients provided'})
 
-	for client in list(drivers.keys()):
+	for client in list(list(drivers)):
 		if kill_dead and not drivers[client].is_logged_in() or client in clients:
 			drivers.pop(client).quit()
 			try:
