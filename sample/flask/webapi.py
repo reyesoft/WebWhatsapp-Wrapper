@@ -35,6 +35,8 @@ import sys
 import time
 import threading
 import werkzeug
+from pyzbar.pyzbar import decode
+from PIL import Image
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, BASE_DIR)
@@ -509,9 +511,18 @@ def get_screen():
 
 @app.route('/screen/qr', methods=['GET'])
 def get_qr():
-	"""Get qr as a json string"""
-	qr = g.driver.get_qr_plain()
-	return jsonify({'qr': qr})
+    """Get qr as a json string"""
+    # NOTE: original qr code from Whatapp NOT WORKING
+    # qr = g.driver.get_qr_plain()
+
+    # NOTE: get qr string from image
+    qr_img_title = 'screen_' + g.client_id + '.png'
+    qr_image_path = STATIC_FILES_PATH + qr_img_title
+    qr_data = ''
+    if g.driver_status != WhatsAPIDriverStatus.LoggedIn:
+        qr_data = decode(Image.open(qr_image_path))[0].data.decode('utf-8')
+
+    return jsonify({'qr': qr_data})
 
 
 @app.route('/isloggedin', methods=['GET'])
