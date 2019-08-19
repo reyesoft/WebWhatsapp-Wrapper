@@ -131,7 +131,7 @@ API_KEY = '5ohsRCA8os7xW7arVagm3O861lMZwFfl'
 # File type allowed to be sent or received
 ALLOWED_EXTENSIONS = ('avi', 'mp4', 'png', 'jpg', 'jpeg', 'gif', 'mp3', 'doc', 'docx', 'pdf')
 # Path to temporarily store static files like images
-STATIC_FILES_PATH = 'static/'
+STATIC_FILES_PATH = BASE_DIR + '/sample/flask/static/'
 
 # Seleneium Webdriver configuration
 CHROME_IS_HEADLESS = True
@@ -520,6 +520,7 @@ def get_qr():
     qr_image_path = STATIC_FILES_PATH + qr_img_title
     qr_data = ''
     if g.driver_status != WhatsAPIDriverStatus.LoggedIn:
+        g.driver.get_qr(qr_image_path)
         qr_data = decode(Image.open(qr_image_path))[0].data.decode('utf-8')
 
     return jsonify({'qr': qr_data})
