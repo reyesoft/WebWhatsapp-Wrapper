@@ -297,9 +297,6 @@ class WhatsAPIDriver(object):
         """Get pairing QR code from client"""
         if "Click to reload QR code" in self.driver.page_source:
             self.reload_qr()
-        print('----------------------------self.driver.page_source-----------------------------')
-        print(self.driver.page_source)
-        print('----------------------------self.driver.page_source UP-----------------------------')
         qr = self.driver.find_element_by_css_selector(self._SELECTORS['qrCode'])
         if filename is None:
             fd, fn_png = tempfile.mkstemp(prefix=self.username, suffix='.png')
