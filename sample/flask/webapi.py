@@ -701,6 +701,7 @@ def send_message(chat_id):
 		print('message --->', message)
 		print('chat_id --->', chat_id)
 		res = g.driver.chat_send_message(chat_id, message)
+		print('res --->', res)
 
 	if res:
 		return jsonify(res)
