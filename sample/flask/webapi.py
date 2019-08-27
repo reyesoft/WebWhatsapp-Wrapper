@@ -524,7 +524,7 @@ def get_qr():
         data_from_qr = decode(Image.open(qr_image_path))
         print('data_from_qr -------------------->', data_from_qr)
 		# if QR Code data is empty, return empty string
-        if decode(Image.open(qr_image_path)).length > 0:
+        if len(decode(Image.open(qr_image_path))) > 0:
         	qr_data = decode(Image.open(qr_image_path))[0].data.decode('utf-8')
         else:
             qr_data = ''
