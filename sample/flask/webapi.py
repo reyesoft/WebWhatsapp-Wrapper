@@ -523,7 +523,11 @@ def get_qr():
         g.driver.get_qr(qr_image_path)
         data_from_qr = decode(Image.open(qr_image_path))
         print('data_from_qr -------------------->', data_from_qr)
-        qr_data = decode(Image.open(qr_image_path))[0].data.decode('utf-8')
+		# if QR Code data is empty, return empty string
+        if decode(Image.open(qr_image_path)).length > 0:
+        	qr_data = decode(Image.open(qr_image_path))[0].data.decode('utf-8')
+        else:
+            qr_data = ''
 
     return jsonify({'qr': qr_data})
 
