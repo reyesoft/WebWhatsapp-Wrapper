@@ -521,6 +521,8 @@ def get_qr():
     qr_data = ''
     if g.driver_status != WhatsAPIDriverStatus.LoggedIn:
         g.driver.get_qr(qr_image_path)
+        data_from_qr = decode(Image.open(qr_image_path))
+        print('data_from_qr -------------------->', data_from_qr)
         qr_data = decode(Image.open(qr_image_path))[0].data.decode('utf-8')
 
     return jsonify({'qr': qr_data})
