@@ -270,6 +270,11 @@ class WhatsAPIDriver(object):
         else:
             profilePath = self._profile.path
 
+        print('--------------------------------------------')
+        print('--------------------------------------------')
+        print('using profiel path: ', profilePath)
+        print('--------------------------------------------')
+        print('--------------------------------------------')
         local_storage_file = os.path.join(profilePath, self._LOCAL_STORAGE_FILE)
         if os.path.exists(local_storage_file):
             with open(local_storage_file) as f:
