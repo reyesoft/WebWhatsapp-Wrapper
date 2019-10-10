@@ -282,13 +282,15 @@ class WhatsAPIDriver(object):
 
     def is_logged_in(self):
         """Returns if user is logged. Can be used if non-block needed for wait_for_login"""
-
-        if self.is_trying_to_log_in():
-            print('ERROR: Failed connecting to the phone. Are you sure it\'s on?')
-            return False
-        # instead we use this (temporary) solution:
-        # return 'class="app _3dqpi two"' in self.driver.page_source
-        return self.wapi_functions.isLoggedIn()
+        try:
+            # instead we use this (temporary) solution:
+            # return 'class="app _3dqpi two"' in self.driver.page_source
+            return self.wapi_functions.isLoggedIn()
+        except Exception as e:
+            if 'Intentando conectar con el teléfono' in self.driver.page_source:
+                print('Failed connecting to the phone. Are you sure it\'s on?')
+                return False
+            print('\nERROR: ', e)
 
     def wait_for_login(self, timeout=90):
         """Waits for the QR to go away"""
