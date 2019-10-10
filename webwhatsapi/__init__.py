@@ -284,7 +284,7 @@ class WhatsAPIDriver(object):
         """Returns if user is logged. Can be used if non-block needed for wait_for_login"""
 
         if self.is_trying_to_log_in():
-            print('Failed connecting to the phone. Are you sure it\'s on?')
+            print('ERROR: Failed connecting to the phone. Are you sure it\'s on?')
             return False
         # instead we use this (temporary) solution:
         # return 'class="app _3dqpi two"' in self.driver.page_source
