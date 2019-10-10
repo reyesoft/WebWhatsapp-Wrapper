@@ -270,11 +270,6 @@ class WhatsAPIDriver(object):
         else:
             profilePath = self._profile.path
 
-        print('--------------------------------------------')
-        print('--------------------------------------------')
-        print('using profiel path: ', profilePath)
-        print('--------------------------------------------')
-        print('--------------------------------------------')
         local_storage_file = os.path.join(profilePath, self._LOCAL_STORAGE_FILE)
         if os.path.exists(local_storage_file):
             with open(local_storage_file) as f:
@@ -282,9 +277,15 @@ class WhatsAPIDriver(object):
 
             self.driver.refresh()
 
+    def is_trying_to_log_in(self):
+        return 'Intentando conectar con el teléfono' in self.driver.page_source
+
     def is_logged_in(self):
         """Returns if user is logged. Can be used if non-block needed for wait_for_login"""
 
+        if self.is_trying_to_log_in():
+            print('Failed connecting to the phone. Are you sure it\'s on?')
+            return False
         # instead we use this (temporary) solution:
         # return 'class="app _3dqpi two"' in self.driver.page_source
         return self.wapi_functions.isLoggedIn()
