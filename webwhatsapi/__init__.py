@@ -285,12 +285,15 @@ class WhatsAPIDriver(object):
         try:
             # instead we use this (temporary) solution:
             # return 'class="app _3dqpi two"' in self.driver.page_source
-            return self.wapi_functions.isLoggedIn()
+            # @todo: check PR ---> https://github.com/mukulhase/WebWhatsapp-Wrapper/pull/731/files
+            # return self.wapi_functions.isLoggedIn()
+            return self.driver.execute_script("if (document.querySelector('*[data-icon=chat]') !== null) { return true } else { return false }")
         except Exception as e:
             if 'Intentando conectar con el teléfono' in self.driver.page_source:
                 print('Failed connecting to the phone. Are you sure it\'s on?')
                 return False
             print('\nERROR: ', e)
+            return False
 
     def wait_for_login(self, timeout=90):
         """Waits for the QR to go away"""
