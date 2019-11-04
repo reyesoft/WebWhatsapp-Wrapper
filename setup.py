@@ -58,8 +58,8 @@ setup(
     long_description=long_description,
 
     # The project's main homepage.
-    url='https://github.com/mukulhase/WhatsAPI',
-    download_url='https://github.com/mukulhase/WhatsAPI/archive/{}.tar.gz'.format(version),
+    # url='https://github.com/mukulhase/WhatsAPI',
+    # download_url='https://github.com/mukulhase/WhatsAPI/archive/{}.tar.gz'.format(version),
 
     # Author details
     author='Mukul Hase',
