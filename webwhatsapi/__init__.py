@@ -217,10 +217,7 @@ class WhatsAPIDriver(object):
             if executable_path is not None:
                 executable_path = os.path.abspath(executable_path)
 
-            #     self.logger.info("Starting webdriver")
-            #     self.driver = webdriver.Firefox(capabilities=capabilities, options=options, executable_path=executable_path,
-            #                                         **extra_params)
-            # else:
+                self.logger.info("Starting webdriver")
                 self.driver = webdriver.Firefox(capabilities=capabilities, options=options,
                                                 executable_path=executable_path,
                                                 **extra_params)
@@ -270,7 +267,6 @@ class WhatsAPIDriver(object):
         self.driver.get(self._URL)
 
         profilePath = ""
-        # NOTE: maxi7587 changed to firefox
         if self.client == "chrome":
             profilePath = ""
         else:
@@ -452,7 +448,7 @@ class WhatsAPIDriver(object):
         message_objs = self.wapi_functions.getAllMessagesInChat(chat.id, include_me, include_notifications)
 
         for message in message_objs:
-            yield(factory_message(message, self))
+            yield (factory_message(message, self))
 
     def get_all_message_ids_in_chat(self, chat, include_me=False, include_notifications=False):
         """
