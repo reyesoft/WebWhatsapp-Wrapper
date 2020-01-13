@@ -525,7 +525,7 @@ class WhatsAPIDriver(object):
 
         raise ChatNotFoundError("Chat {0} not found".format(chat_name))
 
-    def get_chat_from_phone_number(self, number, createIfNotFound=False):
+    def get_chat_from_phone_number(self, number, createIfNotFound=True):
         """
         Gets chat by phone number
         Number format should be as it appears in Whatsapp ID
