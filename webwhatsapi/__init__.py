@@ -71,7 +71,8 @@ class WhatsAPIDriver(object):
 
     _SELECTORS = {
         'firstrun': "#wrapper",
-        'qrCode': "img[alt=\"Scan me!\"]",
+        # 'qrCode': "img[alt=\"Scan me!\"]",
+        'qrCode': "canvas[aria-label=\"Scan me!\"]",
         'qrCodePlain': "div[data-ref]",
         # NOTE: selector changed by maxi7587
         # 'qrCodePlain': "._2EZ_m",
